@@ -12,27 +12,7 @@ export default function Home() {
   return (
     <main>
       <section className=" h-100 bg-gradient-to-b from-gray-700 to-gray-900 min-h-screen">
-        <nav className="bg-gray-800 p-6 flex justify-between">
-              <h1 className=' text-xl'>Project Growth</h1>
-              <ul className=" flex items-center">
-                <li>
-                  <Link
-                    href="/categories"
-                    className="text-lg font-medium text-gray-100 hover:text-white mr-4"
-                  >
-                    Cateogries
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/about"
-                    className="text-lg font-medium text-gray-100 hover:text-white mr-4"
-                  >
-                    About
-                  </Link>
-                </li>
-              </ul>
-        </nav>
+        
 
         <div>
             <div className='  flex flex-col  pt-20 justify-center items-center'>
