@@ -33,7 +33,8 @@ type CategoryIcons = Record<number, [IconDefinition, string]>;
 
 export default async function CategoryDetail({params}) {
   const today = new Date();
-  const yt_data_path = `http://127.0.0.1:8000/category/${today.toISOString().slice(0, 10)}`
+  // const yt_data_path = `http://127.0.0.1:8000/category/${today.toISOString().slice(0, 10)}`
+  const yt_data_path = `http://127.0.0.1:8000/category/${"2023-02-27"}`
   const data = await fetch(yt_data_path)
   const res = await data.json();
 

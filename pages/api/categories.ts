@@ -1,13 +1,10 @@
 import axios from 'axios';
 import categories from '.././../types/categories'
 import { NextApiRequest, NextApiResponse } from 'next'
-
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  res.status(200).json({ name: 'John Doe' })
-}
+require('dotenv').config();
 
 async function getCategories() {
-  const DEVELOPER_KEY = "AIzaSyCYFvoCfs6D4OJe7eJfec_0192f234JPzg"
+  const DEVELOPER_KEY = process.env.API_KEY
   const region = "IE"
   const response = await axios.get('https://www.googleapis.com/youtube/v3/videoCategories', {
     params: {

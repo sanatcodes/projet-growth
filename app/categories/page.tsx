@@ -3,11 +3,13 @@ import { Category, Props } from '../types/types'
 import React from 'react'
 import CircleButton from './CircleButton';
 import Link from 'next/link';
+require('dotenv').config();
+
 
 
 export default async function Categories(){
   // const categories = getCategories()
-  const DEVELOPER_KEY = "AIzaSyCYFvoCfs6D4OJe7eJfec_0192f234JPzg"
+  const DEVELOPER_KEY = process.env.API_KEY;
   const region = "IE";
   const data = await fetch(`https://youtube.googleapis.com/youtube/v3/videoCategories?part=snippet&regionCode=${region}&key=${DEVELOPER_KEY}`);
   const res = await data.json();
