@@ -27,7 +27,9 @@ import {
   faTicketAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
-import { APIResponse } from '../../types/types';
+import { APIResponse, CategoryDetailDonut } from '../../types/types';
+import DonutChart from '@/components/DonutChart';
+
 
 
 type CategoryIcons = Record<number, [IconDefinition, string]>;
@@ -37,6 +39,7 @@ const fetchData = async () => {
   try {
     const response = await fetch("http://127.0.0.1:8000/category/2023-02-27");
     const data:APIResponse[] = await response.json();
+    console.log("fetch data", data);
     return data
   } catch (error) {
     console.log("error", error);
@@ -45,12 +48,24 @@ const fetchData = async () => {
 
 
 export default  function CategoryDetail({params}) {
-  const [res, setData] = useState<APIResponse[]>([]);
+  const [res, setData] = useState<APIResponse[] | null>(null);
+  const [transformedData, setTransformedData] = useState<CategoryDetailDonut[] | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchData().then((data) => {
       if (data !== undefined) {
+        console.log("use effect data", data);
         setData(data);
+        const transData = data.map((item: APIResponse) => ({
+          category_id: item.category_id,
+          name: categoryIcons[item.category_id][1],
+          views: item.views,
+          likes: item.likes,
+          videos: item.videos,
+        }));
+        setTransformedData(transData);
+        setLoading(false);
       }
     });
   }, []);
@@ -90,9 +105,12 @@ export default  function CategoryDetail({params}) {
     43: [faGlobeAmericas, 'Shows'],
     44: [faTicketAlt, 'Trailers'],
   }
-  
-  
 
+  const[iconName, categoryName] = categoryIcons[id]
+
+  // Transform data for visualzation 
+  
+  
   // current views 
   function extractFormattedData(data: any, categoryId: number): any | null {
 
@@ -133,18 +151,21 @@ export default  function CategoryDetail({params}) {
     };
   }
 
-  const catCurrentData = extractFormattedData(res, id);
+  
 
+  const catCurrentData = res ==  null ? {views: "na", comments:"na", likes: "na"}: extractFormattedData(res, id);
 
-  const[iconName, categoryName] = categoryIcons[id]
   
   return (
-      <div className=" flex gap-20 justify-center items-center">
-        <div className=" flex-initial w-25 flex-col ">
-          <div className=" w-20 flex">
-            <FontAwesomeIcon icon={iconName}/>
+      <div className=" flex flex-col gap-20 justify-center items-center">
+        <div className=" flex flex-row gap-10">
+        <div className="flex justify-center items-center">
+          <div className="flex flex-col items-center space-y-2">
+            <div className="w-15 h-15 flex justify-center items-center ">
+              <FontAwesomeIcon icon={iconName} size="lg" />
+            </div>
+            <h1 className="text-center text-xl">{categoryName}</h1>
           </div>
-          <h1>{categoryName}</h1>
         </div>
         
         <div className="flex flex-wrap">
@@ -167,8 +188,20 @@ export default  function CategoryDetail({params}) {
             <h1 className="text-2xl font-bold">{catCurrentData.commentCount}</h1>
           </div>
         </div>
+        </div>
 
+        {!loading && (
+          <div className=''>
+          <DonutChart categoryData={transformedData} comparisonType={"views"}/>
+        </div>
+        )}
+
+        
+
+
+      
       </div>
+      
   )
   
 }

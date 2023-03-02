@@ -18,3 +18,11 @@ export type APIResponse = {
   comment_count: number;
   videos: number;
 }
+
+export type CategoryDetailDonut = {
+  category_id: string;
+  name: string;
+  views: number;
+  likes: number;
+  videos: number;
+}
