@@ -1,4 +1,5 @@
-import React from 'react';
+'use client'
+import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faFilm,
@@ -26,20 +27,37 @@ import {
   faTicketAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
-import { useRouter } from 'next/router'
+import { APIResponse } from '../../types/types';
 
 
 type CategoryIcons = Record<number, [IconDefinition, string]>;
 
-export default async function CategoryDetail({params}) {
-  const today = new Date();
-  // const yt_data_path = `http://127.0.0.1:8000/category/${today.toISOString().slice(0, 10)}`
-  const yt_data_path = `http://127.0.0.1:8000/category/${"2023-02-27"}`
-  const data = await fetch(yt_data_path)
-  const res = await data.json();
+
+const fetchData = async () => {
+  try {
+    const response = await fetch("http://127.0.0.1:8000/category/2023-02-27");
+    const data:APIResponse[] = await response.json();
+    return data
+  } catch (error) {
+    console.log("error", error);
+  }
+};
+
+
+export default  function CategoryDetail({params}) {
+  const [res, setData] = useState<APIResponse[]>([]);
+
+  useEffect(() => {
+    fetchData().then((data) => {
+      if (data !== undefined) {
+        setData(data);
+      }
+    });
+  }, []);
 
   const { id } = params;
-  // can you also add the category name to the object below like this 1: [faFilm, "Film & Animation"]
+
+  //category icons and names dictionary
   const categoryIcons:CategoryIcons = {
     1: [faFilm, 'Film & Animation'],
     2: [faCar, 'Autos & Vehicles'],
@@ -73,7 +91,7 @@ export default async function CategoryDetail({params}) {
     44: [faTicketAlt, 'Trailers'],
   }
   
-
+  
 
   // current views 
   function extractFormattedData(data: any, categoryId: number): any | null {
@@ -83,7 +101,7 @@ export default async function CategoryDetail({params}) {
       return null;
     }
 
-    console.log(categoryData);
+    console.log("what data looks like",categoryData);
     
   
     const formatCount = (val: string) => {
@@ -116,6 +134,7 @@ export default async function CategoryDetail({params}) {
   }
 
   const catCurrentData = extractFormattedData(res, id);
+
 
   const[iconName, categoryName] = categoryIcons[id]
   

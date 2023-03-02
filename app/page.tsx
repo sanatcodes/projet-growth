@@ -1,9 +1,11 @@
+'use client';
 import Image from 'next/image';
 import { Inter } from '@next/font/google';
 import styles from './page.module.css';
 import { AiFillYoutube } from 'react-icons/ai';
 import { IconContext } from "react-icons";
 import Link from 'next/link';
+import DonutChart from '../components/DonutChart';
 
 
 const inter = Inter({ subsets: ['latin'] });
@@ -28,6 +30,7 @@ export default function Home() {
                   </button>
                 </Link>
             </div>
+
         </div>  
 
       </section>
