@@ -14,51 +14,52 @@ interface Props {
 }
 
 const DonutChart = ({ categoryData, comparisonType, category }: Props) => {
-  const [chartData, setChartData] = useState();
-  console.log("what is categoryData", categoryData);
-  
-  const colors = chroma
-    .scale(["#7BCFE9", "#9EDC5C", "#FFBE5C", "#ED747C", "#7C82A3"])
-    .colors(categoryData.length);
+ let data = {
+    labels: categoryData.map((category) => category.name),
+    datasets: [
+      {
+        data: categoryData.map((category) => category[comparisonType]),
+        backgroundColor: chroma
+          .scale(["#7BCFE9", "#9EDC5C", "#FFBE5C", "#ED747C", "#7C82A3"])
+          .colors(categoryData.length),
+      },
+    ],
+  };
 
-  useEffect(() => {
-    if (categoryData) {
-      const labels = categoryData.map((category) => category.name);
-      const data = categoryData.map((category) => category[comparisonType]);
+  if (category) {
+  const selectedCategory = categoryData.find((c) => c.category_id === category);
+  if (selectedCategory) {
+    data = {
+      labels: ["Selected Category", "Others"],
+      datasets: [
+        {
+          data: [selectedCategory[comparisonType], categoryData.reduce((acc, c) => c[comparisonType] + acc, 0) - selectedCategory[comparisonType]],
+          backgroundColor: ["#7BCFE9", "#DDDDDD"],
+        },
+      ],
+    };
+  }
+}
 
-      setChartData({
-        labels: labels,
-        datasets: [
-          {
-            data: data,
-            backgroundColor: colors,
-            hoverOffset: 4,
-          },
-        ],
-      });
-    }
-  }, [categoryData, comparisonType]);
+  const options = {
+    tooltips: {
+      callbacks: {
+        label: (tooltipItem, chartData) => {
+          const label = chartData.labels[tooltipItem.index];
+          const value = chartData.datasets[0].data[tooltipItem.index];
+          const total = chartData.datasets[0].data.reduce((acc, val) => acc + val, 0);
+          const percentage = ((value / total) * 100).toFixed(2);
+          return `${label}: ${value} (${percentage}%)`;
+        },
+      },
+    },
+    title: {
+      display: true,
+      text: `Comparison by ${comparisonType}`,
+    },
+  };
 
-  return (
-    <div>
-      {chartData && (
-        <Doughnut
-          data={chartData}
-          options={{
-            plugins: {
-              title: {
-                display: true,
-                text: `Comparison by ${comparisonType}`,
-              },
-            },
-            maintainAspectRatio: false,
-            width: 800,
-            height: 800,
-          }}
-        />
-      )}
-    </div>
-  );
+  return <Doughnut data={data} options={options} />;
 };
 
 export default DonutChart;

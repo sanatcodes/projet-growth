@@ -29,6 +29,7 @@ import {
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { APIResponse, CategoryDetailDonut } from '../../types/types';
 import DonutChart from '@/components/DonutChart';
+import DonutChartWithCategory from '@/components/DonutChartWithCategory';
 
 
 
@@ -192,7 +193,8 @@ export default  function CategoryDetail({params}) {
 
         {!loading && (
           <div className=''>
-          <DonutChart categoryData={transformedData} comparisonType={"views"}/>
+          {/* <DonutChart categoryData={transformedData} comparisonType={"views"} category={categoryName}/> */}
+          <DonutChartWithCategory categoryData={transformedData} comparisonType={"views"} category={categoryName} />
         </div>
         )}
 
