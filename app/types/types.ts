@@ -26,3 +26,12 @@ export type CategoryDetailDonut = {
   likes: number;
   videos: number;
 }
+
+export type CategoryDetailBubble = {
+  category_id: string;
+  views: number;
+  likes: number;
+  videos: number;
+  trending_date: string;
+}
+
