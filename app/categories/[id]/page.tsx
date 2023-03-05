@@ -239,48 +239,48 @@ export default function CategoryDetail({ params }) {
   return (
     <div className=" flex flex-col gap-20 justify-center items-center">
       <div className=" flex flex-row gap-10">
-        <div className="flex justify-center items-center">
-          <div className="flex flex-col items-center space-y-2">
-            <div className="w-15 h-15 flex justify-center items-center ">
-              <FontAwesomeIcon icon={iconName} size="lg" />
-            </div>
-            <h1 className="text-center text-xl">{categoryName}</h1>
-          </div>
+        <div className="flex flex-col justify-center items-center gap-2">
+          <FontAwesomeIcon className=" text-3xl mr-2" icon={iconName} />
+          <h1 className="text-center text-3xl">{categoryName}</h1>
         </div>
 
         <div className="flex flex-wrap">
           <div
             className={`w-1/3 p-4 cursor-pointer ${
-              comparisonType === 'views' ? 'border-b-2 border-purple-500' : ''
+              comparisonType === 'views' ? 'border-b-4 border-purple-500' : ''
             }`}
             onClick={handleViewsClick}
           >
-            <h1 className="text-2xl font-bold">Views</h1>
+            <h1 className="text-2xl font-bold text-center">Views</h1>
           </div>
           <div
             className={`w-1/3 p-4 cursor-pointer ${
-              comparisonType === 'videos' ? 'border-b-2 border-purple-500' : ''
+              comparisonType === 'videos' ? 'border-b-4 border-purple-500' : ''
             }`}
             onClick={handleVideosClick}
           >
-            <h1 className="text-2xl font-bold">Videos</h1>
+            <h1 className="text-2xl font-bold text-center">Videos</h1>
           </div>
           <div
             className={`w-1/3 p-4 cursor-pointer ${
-              comparisonType === 'likes' ? 'border-b-2 border-purple-500' : ''
+              comparisonType === 'likes' ? 'border-b-4 border-purple-500' : ''
             }`}
             onClick={handleLikesClick}
           >
-            <h1 className="text-2xl font-bold">Likes</h1>
+            <h1 className="text-2xl font-bold text-center">Likes</h1>
           </div>
           <div className="w-1/3 p-4">
-            <h1 className="text-2xl font-bold">{catCurrentData.views}</h1>
+            <h1 className="text-2xl text-center font-bold">
+              {catCurrentData.views}
+            </h1>
           </div>
           <div className="w-1/3 p-4">
-            <h1 className="text-2xl font-bold">{catCurrentData.likes}</h1>
+            <h1 className="text-2xl text-center font-bold">
+              {catCurrentData.likes}
+            </h1>
           </div>
           <div className="w-1/3 p-4">
-            <h1 className="text-2xl font-bold">
+            <h1 className="text-2xl text-center font-bold">
               {catCurrentData.commentCount}
             </h1>
           </div>
