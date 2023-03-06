@@ -7,6 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
+  },"browser": {
+    "fs": false,
+    "path": false,
+    "os": false
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.3.0",

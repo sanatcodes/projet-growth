@@ -1,3 +1,4 @@
+import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 export type Category = {
     id: string;
     snippet: {
@@ -35,3 +36,4 @@ export type CategoryDetailBubble = {
   trending_date: string;
 }
 
+export type CategoryIcons = Record<number, [IconDefinition, string]>;
