@@ -20,6 +20,7 @@ import {
   getPopularVideosByCategory,
 } from '@/pages/api/categoriesDetailAPI';
 import VideosFromCategory from './VideosFromCategory';
+import TagCloud from './TagCloud';
 
 // fetchPredictionData = async () => {};
 
@@ -223,6 +224,10 @@ export default function CategoryDetail({ params }) {
                   : `${comparisonType}_prediction`
               }
             />
+          </div>
+          <div className=" w-full">
+            <h1 className="text-center mb-5 text-3xl">{`Popular tags in ${categoryName}`}</h1>
+            <TagCloud videos={videoData} />
           </div>
         </div>
       )}

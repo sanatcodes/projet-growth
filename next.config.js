@@ -9,6 +9,8 @@ const nextConfig = {
   images: {
     domains: ['i.ytimg.com'],
   },
+  testPathIgnorePatterns: ['<rootDir>/.next/', '<rootDir>/node_modules/'],
+  setupFilesAfterEnv: ['<rootDir>/setupTests.ts'],
 }
 
 module.exports = nextConfig
