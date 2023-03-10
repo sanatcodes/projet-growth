@@ -1,32 +1,54 @@
 'use client';
-import { Calistoga } from '@next/font/google';
-import { Category, Props } from '../types/types';
-import React, { useState, useEffect } from 'react';
-import CircleButton from './CircleButton';
-import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import { RiSearchLine } from 'react-icons/ri';
+import { Category, APIResponse } from '../types/types';
+import CircleButton from './CircleButton';
 
-export default function Categories() {
+type Props = {};
+
+const Categories: React.FC<Props> = () => {
   const region = 'IE';
-  const [categories, setCategories] = useState([]);
-  const [originalCategories, setOriginalCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [originalCategories, setOriginalCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [currentData, setcurrentData] = useState<APIResponse[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await fetch(
-        `https://youtube.googleapis.com/youtube/v3/videoCategories?part=snippet&regionCode=${region}&key=${process.env.NEXT_PUBLIC_API_KEY}`
+      const [categoriesData, currentData] = await Promise.all([
+        fetch(
+          `https://youtube.googleapis.com/youtube/v3/videoCategories?part=snippet&regionCode=${region}&key=${process.env.NEXT_PUBLIC_API_KEY}`
+        ),
+        fetch('http://127.0.0.1:8000/category/2023-02-27'),
+      ]);
+
+      const [categoriesRes, currentRes] = await Promise.all([
+        categoriesData.json(),
+        currentData.json(),
+      ]);
+
+      // Get the category IDs from currentData
+      const categoryIds = currentRes.map(
+        (item: APIResponse) => item.category_id
       );
-      const res = await data.json();
-      setCategories(res.items);
-      setOriginalCategories(res.items);
+
+      // Filter categories based on their IDs
+      const filteredCategories = categoriesRes.items.filter(
+        (category: Category) => {
+          return categoryIds.includes(category.id);
+        }
+      );
+
+      setCategories(filteredCategories);
+      setOriginalCategories(filteredCategories);
+      setcurrentData(currentRes);
       setLoading(false);
     };
 
     fetchData();
   }, []);
 
-  const handleSearch = (e) => {
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value.toLowerCase();
     const filteredCategories = originalCategories.filter((category) =>
       category.snippet.title.toLowerCase().includes(query)
@@ -44,7 +66,7 @@ export default function Categories() {
 
   return (
     <div className="text-center">
-      <h1 className="text-xl font-medium">Categories</h1>
+      <h1 className="text-xl font-medium">Categories on YouTube</h1>
       <div className="relative mt-6 mx-auto w-64">
         <span className="absolute inset-y-0 left-0 flex items-center pl-3">
           <RiSearchLine />
@@ -65,14 +87,16 @@ export default function Categories() {
         )}
       </div>
       <div className="grid gap-6 place-items-center mt-6 grid-cols-fluid">
-        {categories.map((video) => (
+        {categories.map((category: Category) => (
           <CircleButton
-            key={video.id}
-            category={video.snippet.title}
-            id={video.id}
+            key={category.id}
+            category={category.snippet.title}
+            id={category.id}
           />
         ))}
       </div>
     </div>
   );
-}
+};
+
+export default Categories;

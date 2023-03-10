@@ -1,4 +1,6 @@
-export function extractFormattedData(data: any, categoryId: number): any | null {
+import { APIResponse } from "@/app/types/types";
+
+export function extractFormattedData(data: APIResponse[], categoryId: number): any | null {
     const categoryData = data.filter(
       (category: any) => category.category_id == categoryId
     );

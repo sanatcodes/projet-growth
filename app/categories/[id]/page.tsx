@@ -1,22 +1,31 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { APIResponse, CategoryDetailDonut } from '../../types/types';
-// import DonutChart from '@/components/DonutChart';
+import {
+  APIResponse,
+  CategoryDetailDonut,
+  PredictionAPIResponse,
+} from '../../types/types';
 import DonutChartWithCategory from '@/components/DonutChartWithCategory';
 import LineChart from '@/components/LineChart';
 import { extractFormattedData } from '@/utils/helpful_funcs';
 import { categoryIcons } from '@/utils/dictionaries';
 import {
   fetchCategoryData,
+  fetchCategoryPrediction,
   fetchWeekData,
+  fetchWeekPrediction,
 } from '@/pages/api/categoriesDetailAPI';
+import VideosFromCategory from './VideosFromCategory';
 
 // fetchPredictionData = async () => {};
 
 export default function CategoryDetail({ params }) {
+  const today = new Date().toISOString().substring(0, 10);
   const [res, setData] = useState<APIResponse[] | null>(null);
-  const [weekData, setWeekData] = useState<APIResponse[] | null>(null);
+  const [weekData, setWeekData] = useState<APIResponse[] | undefined>(
+    undefined
+  );
   const [transformedData, setTransformedData] = useState<
     CategoryDetailDonut[] | null
   >(null);
@@ -25,6 +34,14 @@ export default function CategoryDetail({ params }) {
     'views' | 'likes' | 'videos'
   >('views');
   const [lineChartType, setLineChartType] = useState(0);
+  const [weekPrediction, setWeekPrediction] = useState<
+    PredictionAPIResponse[] | null
+  >(null);
+  const [lineChartData, setLineChartData] = useState<
+    PredictionAPIResponse[] | APIResponse[] | [] | null
+  >([]);
+
+  const { id } = params;
 
   const handleViewsClick = () => {
     setComparisonType('views');
@@ -39,10 +56,13 @@ export default function CategoryDetail({ params }) {
   };
 
   useEffect(() => {
-    Promise.all([fetchCategoryData('2023-02-27'), fetchWeekData('2023-03-05')])
-      .then(([data, weekData]) => {
+    Promise.all([
+      fetchCategoryData(today),
+      fetchWeekPrediction('1', today, 2),
+      fetchWeekData(today),
+    ])
+      .then(([data, twoWeekPrediction, weekData]) => {
         if (data !== undefined) {
-          console.log('use effect data', data);
           setData(data);
           const transData = data.map((item: APIResponse) => ({
             category_id: item.category_id,
@@ -53,6 +73,9 @@ export default function CategoryDetail({ params }) {
           }));
           setTransformedData(transData);
         }
+        setWeekPrediction(twoWeekPrediction);
+        console.log('this is the prediction', twoWeekPrediction);
+
         setWeekData(weekData);
         setLoading(false);
       })
@@ -62,19 +85,18 @@ export default function CategoryDetail({ params }) {
       });
   }, []);
 
-  // useEffect(() => {
-  //   if (lineChartType === 0) {
-  //     fetchPredictionData()
-  //       .then((predictionData) => {
-  //         setPredictionData(predictionData);
-  //       })
-  //       .catch((error) => {
-  //         console.log('Error fetching prediction data:', error);
-  //       });
-  //   }
-  // }, [lineChartType]);
-
-  const { id } = params;
+  // 1: this week 2: next week 3: two weeks
+  useEffect(() => {
+    if (lineChartType == 0) {
+      setLineChartData(
+        weekData?.filter((d: APIResponse) => d.category_id == id) || []
+      );
+    } else if (lineChartType == 1) {
+      setLineChartData(weekPrediction?.slice(0, 7) || []);
+    } else {
+      setLineChartData(weekPrediction);
+    }
+  }, [lineChartType, id, weekData, weekPrediction]);
 
   const [iconName, categoryName] = categoryIcons[id];
 
@@ -172,11 +194,16 @@ export default function CategoryDetail({ params }) {
             </button>
           </div>
 
-          <div className=" w-1/2 items-center justify-center">
+          <div className=" w-1/2 items-center justify-center flex flex-row">
+            {/* <VideosFromCategory categoryId={id} /> */}
             <LineChart
-              data={weekData?.filter((d: any) => d.category_id == id)}
+              data={lineChartData}
               categoryId={id}
-              comparisonType={comparisonType}
+              comparisonType={
+                lineChartType == 0
+                  ? comparisonType
+                  : `${comparisonType}_prediction`
+              }
             />
           </div>
         </div>
