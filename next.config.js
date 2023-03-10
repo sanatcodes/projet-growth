@@ -6,6 +6,9 @@ const nextConfig = {
   env: {
     customKey: 'my-value',
   },
+  images: {
+    domains: ['i.ytimg.com'],
+  },
 }
 
 module.exports = nextConfig

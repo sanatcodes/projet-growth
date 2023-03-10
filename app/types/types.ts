@@ -58,6 +58,7 @@ export type VideoQueryParams = {
   chart: string;
   regionCode: string;
   videoCategoryId: string;
+  maxWidth: string;
   key: string;
   pageToken?: string;
 }

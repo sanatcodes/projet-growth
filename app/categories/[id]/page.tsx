@@ -5,6 +5,8 @@ import {
   APIResponse,
   CategoryDetailDonut,
   PredictionAPIResponse,
+  Video,
+  VideoResponse,
 } from '../../types/types';
 import DonutChartWithCategory from '@/components/DonutChartWithCategory';
 import LineChart from '@/components/LineChart';
@@ -15,6 +17,7 @@ import {
   fetchCategoryPrediction,
   fetchWeekData,
   fetchWeekPrediction,
+  getPopularVideosByCategory,
 } from '@/pages/api/categoriesDetailAPI';
 import VideosFromCategory from './VideosFromCategory';
 
@@ -40,6 +43,7 @@ export default function CategoryDetail({ params }) {
   const [lineChartData, setLineChartData] = useState<
     PredictionAPIResponse[] | APIResponse[] | [] | null
   >([]);
+  const [videoData, setVideoData] = useState<Video[]>([]);
 
   const { id } = params;
 
@@ -60,8 +64,21 @@ export default function CategoryDetail({ params }) {
       fetchCategoryData(today),
       fetchWeekPrediction('1', today, 2),
       fetchWeekData(today),
+      (async () => {
+        let nextPageToken: string | undefined;
+        let allVideos: Video[] = [];
+
+        do {
+          const { videos, nextPageToken: nextToken } =
+            await getPopularVideosByCategory(id, nextPageToken);
+          allVideos = [...allVideos, ...videos];
+          nextPageToken = nextToken;
+        } while (nextPageToken);
+
+        return { videos: allVideos };
+      })(),
     ])
-      .then(([data, twoWeekPrediction, weekData]) => {
+      .then(([data, twoWeekPrediction, weekData, videoData]) => {
         if (data !== undefined) {
           setData(data);
           const transData = data.map((item: APIResponse) => ({
@@ -77,6 +94,7 @@ export default function CategoryDetail({ params }) {
         console.log('this is the prediction', twoWeekPrediction);
 
         setWeekData(weekData);
+        setVideoData(videoData.videos);
         setLoading(false);
       })
       .catch((error) => {
@@ -194,8 +212,8 @@ export default function CategoryDetail({ params }) {
             </button>
           </div>
 
-          <div className=" w-1/2 items-center justify-center flex flex-row">
-            {/* <VideosFromCategory categoryId={id} /> */}
+          <div className=" w-1/2 items-center gap-6 justify-center flex flex-row">
+            <VideosFromCategory categoryId={id} videos={videoData} />
             <LineChart
               data={lineChartData}
               categoryId={id}

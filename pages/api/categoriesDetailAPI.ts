@@ -81,16 +81,17 @@ export async function getPopularVideosByCategory(
   categoryId: string,
   pageToken?: string
 ): Promise<VideoResponse> {
-  const baseUrl = "https://www.googleapis.com/youtube/v3/videos";
+  const baseUrl = "https://youtube.googleapis.com/youtube/v3/videos";
   const queryParams: VideoQueryParams = {
     part: "snippet",
     chart: "mostPopular",
     regionCode: "IE",
     videoCategoryId: categoryId,
     key: process.env.NEXT_PUBLIC_API_KEY as string,
+    maxWidth: '100',
     pageToken,
   };
-  const url = `${baseUrl}?${new URLSearchParams(queryParams)}`;
+  const url = `${baseUrl}?part=${queryParams.part}&chart=${queryParams.chart}&maxWidth=${queryParams.maxWidth}&regionCode=${queryParams.regionCode}&videoCategoryId=${queryParams.videoCategoryId}&key=${queryParams.key}${queryParams.pageToken ? `&pageToken=${queryParams.pageToken}` : ''}`;
 
   const response = await fetch(url);
 
@@ -118,3 +119,4 @@ export async function getPopularVideosByCategory(
     nextPageToken,
   };
 }
+
