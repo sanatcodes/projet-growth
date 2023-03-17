@@ -1,6 +1,6 @@
-import { Video } from '@/app/types/types';
+import { tagCloudOptions, Video } from '@/app/types/types';
 import React, { useMemo } from 'react';
-import WordCloud from 'react-wordcloud';
+import WordCloud, { OptionsProp } from 'react-wordcloud';
 
 interface Props {
   videos?: Video[];
@@ -38,21 +38,22 @@ const TagCloud: React.FC<Props> = ({ videos = []}) => {
   }, [tagCounts]);
 
   // Define styles for word cloud
-  const options = {
+  const options: OptionsProp = {
     colors: ['#7BCFE9', '#9EDC5C', '#FFBE5C', '#ED747C', '#7C82A3'],
     enableTooltip: true,
     deterministic: false,
     fontFamily: 'sans-serif',
-    fontSizes: [12, 60] as [number, number],
+    fontSizes: [12, 60],
     fontStyle: 'normal',
     fontWeight: 'normal',
     padding: 1,
     rotations: 3,
-    rotationAngles: [0, 90],
+    rotationAngles: [-90, 90],
     scale: 'sqrt',
     spiral: 'archimedean',
     transitionDuration: 1000,
   };
+  
 
   return (
     <div className="w-full">

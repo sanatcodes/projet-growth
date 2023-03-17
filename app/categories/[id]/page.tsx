@@ -22,9 +22,13 @@ import {
 import VideosFromCategory from './VideosFromCategory';
 import TagCloud from './TagCloud';
 
-// fetchPredictionData = async () => {};
+interface CategoryDetailProps {
+  params: {
+    id: string;
+  };
+}
 
-export default function CategoryDetail({ params }) {
+export default function CategoryDetail({ params }: CategoryDetailProps) {
   const today = new Date().toISOString().substring(0, 10);
   const [res, setData] = useState<APIResponse[] | null>(null);
   const [weekData, setWeekData] = useState<APIResponse[] | undefined>(
@@ -47,6 +51,8 @@ export default function CategoryDetail({ params }) {
   const [videoData, setVideoData] = useState<Video[]>([]);
 
   const { id } = params;
+
+  const catID = parseInt(id);
 
   const handleViewsClick = () => {
     setComparisonType('views');
@@ -71,7 +77,7 @@ export default function CategoryDetail({ params }) {
 
         do {
           const { videos, nextPageToken: nextToken } =
-            await getPopularVideosByCategory(id, nextPageToken);
+            await getPopularVideosByCategory(catID, nextPageToken);
           allVideos = [...allVideos, ...videos];
           nextPageToken = nextToken;
         } while (nextPageToken);
@@ -85,7 +91,7 @@ export default function CategoryDetail({ params }) {
           //transform data for donut chart
           const transData = data.map((item: APIResponse) => ({
             category_id: item.category_id,
-            name: categoryIcons[item.category_id][1],
+            name: categoryIcons[parseInt(item.category_id)][1],
             views: item.views,
             likes: item.likes,
             videos: item.videos,
@@ -101,7 +107,7 @@ export default function CategoryDetail({ params }) {
         console.log('error', error);
         setLoading(false);
       });
-  }, [id, today]);
+  }, [catID, today]);
 
   // 1: this week 2: next week 3: two weeks
   useEffect(() => {
@@ -116,12 +122,12 @@ export default function CategoryDetail({ params }) {
     }
   }, [lineChartType, id, weekData, weekPrediction]);
 
-  const [iconName, categoryName] = categoryIcons[id];
+  const [iconName, categoryName] = categoryIcons[catID];
 
   const catCurrentData =
     res == null
       ? { views: 'na', comments: 'na', likes: 'na' }
-      : extractFormattedData(res, id);
+      : extractFormattedData(res, catID);
 
   return (
     <div className=" flex flex-col gap-20 justify-center items-center">
@@ -213,7 +219,7 @@ export default function CategoryDetail({ params }) {
           </div>
 
           <div className=" w-1/2 items-center gap-6 justify-center flex flex-row">
-            <VideosFromCategory categoryId={id} videos={videoData} />
+            <VideosFromCategory categoryId={catID} videos={videoData} />
             <LineChart
               data={lineChartData}
               categoryId={id}

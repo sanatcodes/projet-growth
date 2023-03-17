@@ -78,7 +78,7 @@ export const fetchWeekPrediction = async (
 };
 
 export async function getPopularVideosByCategory(
-  categoryId: string,
+  categoryId: number,
   pageToken?: string
 ): Promise<VideoResponse> {
   const baseUrl = "https://youtube.googleapis.com/youtube/v3/videos";

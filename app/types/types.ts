@@ -29,6 +29,23 @@ export type PredictionAPIResponse = {
   videos_prediction: number,
 }
 
+export type tagCloudOptions = {
+  colors: string[];
+  enableTooltip: boolean;
+  deterministic: boolean;
+  fontFamily: string;
+  fontSizes: [number, number];
+  fontStyle: string;
+  fontWeight: string;
+  padding: number;
+  rotations: number;
+  rotationAngles: [number, number];
+  scale: string;
+  spiral: string;
+  transitionDuration: number;
+};
+
+
 export type PredictionInput = {
   category_id: string,
   year: string,
