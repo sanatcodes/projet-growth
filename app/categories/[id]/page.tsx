@@ -77,7 +77,7 @@ export default function CategoryDetail({ params }: CategoryDetailProps) {
 
         do {
           const { videos, nextPageToken: nextToken } =
-            await getPopularVideosByCategory(catID, nextPageToken);
+            await getPopularVideosByCategory(id, nextPageToken);
           allVideos = [...allVideos, ...videos];
           nextPageToken = nextToken;
         } while (nextPageToken);
@@ -107,7 +107,7 @@ export default function CategoryDetail({ params }: CategoryDetailProps) {
         console.log('error', error);
         setLoading(false);
       });
-  }, [catID, today]);
+  }, [id, today]);
 
   // 1: this week 2: next week 3: two weeks
   useEffect(() => {
