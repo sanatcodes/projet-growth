@@ -82,6 +82,7 @@ export default function CategoryDetail({ params }) {
       .then(([data, twoWeekPrediction, weekData, videoData]) => {
         if (data !== undefined) {
           setData(data);
+          //transform data for donut chart
           const transData = data.map((item: APIResponse) => ({
             category_id: item.category_id,
             name: categoryIcons[item.category_id][1],
@@ -92,8 +93,6 @@ export default function CategoryDetail({ params }) {
           setTransformedData(transData);
         }
         setWeekPrediction(twoWeekPrediction);
-        console.log('this is the prediction', twoWeekPrediction);
-
         setWeekData(weekData);
         setVideoData(videoData.videos);
         setLoading(false);
@@ -102,7 +101,7 @@ export default function CategoryDetail({ params }) {
         console.log('error', error);
         setLoading(false);
       });
-  }, []);
+  }, [id, today]);
 
   // 1: this week 2: next week 3: two weeks
   useEffect(() => {

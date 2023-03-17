@@ -2,7 +2,7 @@ import { PredictionAPIResponse, PredictionInput, Video, VideoQueryParams, VideoR
 import { APIResponse } from "@/app/types/types";
 import axios from 'axios';
 
-const BASE_URL = 'http://127.0.0.1:8000';
+const BASE_URL = 'https://floating-hollows-40011.herokuapp.com';
 
 export const fetchCategoryData = async (date: string): Promise<APIResponse[]> => {
   const response = await fetch(`${BASE_URL}/category/${date}`);
@@ -102,7 +102,7 @@ export async function getPopularVideosByCategory(
   const json = await response.json();
 
   const videos: Video[] = json.items.map((item: any) => ({
-    id: item.id,
+    id: item.id.videoId,
     title: item.snippet.title,
     channelTitle: item.snippet.channelTitle,
     thumbnailUrl: item.snippet.thumbnails.default.url,

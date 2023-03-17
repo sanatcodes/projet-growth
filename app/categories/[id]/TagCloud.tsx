@@ -3,10 +3,10 @@ import React, { useMemo } from 'react';
 import WordCloud from 'react-wordcloud';
 
 interface Props {
-  videos: Video[];
+  videos?: Video[];
 }
 
-const TagCloud: React.FC<Props> = ({ videos }) => {
+const TagCloud: React.FC<Props> = ({ videos = []}) => {
   // Extract tags from videos
   const tags = useMemo(() => {
     const allTags: string[] = [];

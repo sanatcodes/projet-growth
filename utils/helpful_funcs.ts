@@ -4,7 +4,8 @@ export function extractFormattedData(data: APIResponse[], categoryId: number): a
     const categoryData = data.filter(
       (category: any) => category.category_id == categoryId
     );
-    if (!categoryData) {
+
+    if (!categoryData || !categoryData[0] || !categoryData[0].views) {
       return null;
     }
 
@@ -33,8 +34,8 @@ export function extractFormattedData(data: APIResponse[], categoryId: number): a
     };
 
     return {
-      views: formatCount(categoryData[0].views),
-      likes: formatCount(categoryData[0].videos),
-      commentCount: formatCount(categoryData[0].likes),
+      views: formatCount(categoryData[0].views.toString()),
+      likes: formatCount(categoryData[0].videos.toString()),
+      commentCount: formatCount(categoryData[0].likes.toString()),
     };
   }
