@@ -19,8 +19,8 @@ import {
   fetchWeekPrediction,
   getPopularVideosByCategory,
 } from '@/pages/api/categoriesDetailAPI';
-import VideosFromCategory from './VideosFromCategory';
-import TagCloud from './TagCloud';
+import VideosFromCategory from '../../../components/VideosFromCategory';
+import TagCloud from '../../../components/TagCloud';
 
 interface CategoryDetailProps {
   params: {

@@ -5,7 +5,7 @@ import { RiSearchLine } from 'react-icons/ri';
 import { Category, APIResponse } from '../types/types';
 import CircleButton from './CircleButton';
 
-type Props = {};
+type Props = {}; 
 
 const Categories: React.FC<Props> = () => {
   const region = 'IE';
@@ -27,13 +27,13 @@ const Categories: React.FC<Props> = () => {
         setCategories(
           currentRes.map((item: APIResponse) => ({
             id: item.category_id,
-            snippet: { title: categoryIcons[item.category_id][1] },
+            snippet: { title: categoryIcons[parseInt(item.category_id)][1] },
           }))
         );
         setOriginalCategories(
           currentRes.map((item: APIResponse) => ({
             id: item.category_id,
-            snippet: { title: categoryIcons[item.category_id][1] },
+            snippet: { title: categoryIcons[parseInt(item.category_id)][1] },
           }))
         );
         setLoading(false);

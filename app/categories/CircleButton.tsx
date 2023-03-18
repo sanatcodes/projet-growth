@@ -2,7 +2,12 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
-const CircleButton = ({ category, id }) => {
+interface Props {
+  category: string;
+  id: string;
+}
+
+const CircleButton = ({ category, id }: Props) => {
   // write the name of colour next to hex code in a comment
   const colors = [
     '#F3FD02', // Yellow

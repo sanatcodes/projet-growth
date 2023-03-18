@@ -6,7 +6,7 @@ interface Props {
   videos?: Video[];
 }
 
-const TagCloud: React.FC<Props> = ({ videos = []}) => {
+const TagCloud: React.FC<Props> = ({ videos = [] }) => {
   // Extract tags from videos
   const tags = useMemo(() => {
     const allTags: string[] = [];
@@ -53,7 +53,6 @@ const TagCloud: React.FC<Props> = ({ videos = []}) => {
     spiral: 'archimedean',
     transitionDuration: 1000,
   };
-  
 
   return (
     <div className="w-full">

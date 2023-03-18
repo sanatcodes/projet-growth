@@ -25,7 +25,13 @@ ChartJS.register(
 interface Props {
   data: PredictionAPIResponse[] | APIResponse[] | null;
   categoryId: string;
-  comparisonType: string;
+  comparisonType:
+    | 'views'
+    | 'likes'
+    | 'videos'
+    | 'views_prediction'
+    | 'likes_prediction'
+    | 'videos_prediction';
 }
 
 const LineChart: React.FC<Props> = ({ data, categoryId, comparisonType }) => {
@@ -46,10 +52,12 @@ const LineChart: React.FC<Props> = ({ data, categoryId, comparisonType }) => {
   let chartData: number[] = [];
 
   if (data && data.length > 0) {
-    if ('views_prediction' in data[0]) {
+    if (
+      comparisonType === 'views_prediction' ||
+      comparisonType === 'likes_prediction' ||
+      comparisonType === 'videos_prediction'
+    ) {
       // Data is PredictionAPIResponse[]
-      console.log(comparisonType);
-
       labels = (data as PredictionAPIResponse[])
         .map((item) => item.trending_date)
         .reverse();
