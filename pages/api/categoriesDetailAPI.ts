@@ -102,7 +102,7 @@ export async function getPopularVideosByCategory(
   const json = await response.json();
 
   const videos: Video[] = json.items.map((item: any) => ({
-    id: item.id.videoId,
+    id: item.id,
     title: item.snippet.title,
     channelTitle: item.snippet.channelTitle,
     thumbnailUrl: item.snippet.thumbnails.default.url,
@@ -115,8 +115,7 @@ export async function getPopularVideosByCategory(
   }
 
   return {
-    videos,
-    nextPageToken,
+    videos
   };
 }
 

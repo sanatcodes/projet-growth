@@ -1,3 +1,4 @@
+'use client';
 import { APIResponse } from '@/app/types/types';
 import React, { ReactElement } from 'react';
 

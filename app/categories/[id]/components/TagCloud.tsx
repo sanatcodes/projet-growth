@@ -1,3 +1,4 @@
+'use client';
 import { tagCloudOptions, Video } from '@/app/types/types';
 import React, { useMemo } from 'react';
 import WordCloud, { OptionsProp } from 'react-wordcloud';

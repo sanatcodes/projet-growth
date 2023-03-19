@@ -8,21 +8,20 @@ import {
   Video,
   VideoResponse,
 } from '../../types/types';
-import DonutChartWithCategory from '@/components/DonutChartWithCategory';
-import LineChart from '@/components/LineChart';
+import DonutChartWithCategory from '@/app/categories/[id]/components/DonutChartWithCategory';
+import LineChart from '@/app/categories/[id]/components/LineChart';
 import { extractFormattedData } from '@/utils/helpful_funcs';
 import { categoryIcons } from '@/utils/dictionaries';
 import {
   fetchCategoryData,
-  fetchCategoryPrediction,
   fetchWeekData,
   fetchWeekPrediction,
   getPopularVideosByCategory,
 } from '@/pages/api/categoriesDetailAPI';
-import VideosFromCategory from '../../../components/VideosFromCategory';
-import TagCloud from '../../../components/TagCloud';
-import LineChartButtons from '../../../components/LineChartButtons';
-import ComparisonTable from '../../../components/ComparisonTable';
+import VideosFromCategory from './components/VideosFromCategory';
+import TagCloud from './components/TagCloud';
+import LineChartButtons from './components/LineChartButtons';
+import ComparisonTable from './components/ComparisonTable';
 
 async function getCategoryData() {
   const today = new Date().toISOString().slice(0, 10);
@@ -33,7 +32,7 @@ async function getCategoryData() {
   return currentRes;
 }
 
-export async function getStaticParams() {
+export async function generateStaticParams() {
   const paths = await getCategoryData();
   return paths.map((path: APIResponse) => {
     id: path.category_id;
@@ -87,19 +86,7 @@ export default function CategoryDetail({
       fetchCategoryData(today),
       fetchWeekPrediction('1', today, 2),
       fetchWeekData(today),
-      (async () => {
-        let nextPageToken: string | undefined;
-        let allVideos: Video[] = [];
-
-        do {
-          const { videos, nextPageToken: nextToken } =
-            await getPopularVideosByCategory(id, nextPageToken);
-          allVideos = [...allVideos, ...videos];
-          nextPageToken = nextToken;
-        } while (nextPageToken);
-
-        return { videos: allVideos };
-      })(),
+      getPopularVideosByCategory(id),
     ])
       .then(([data, twoWeekPrediction, weekData, videoData]) => {
         if (data !== null) {
@@ -118,6 +105,7 @@ export default function CategoryDetail({
         setWeekData(weekData);
         setVideoData(videoData.videos);
         setLoading(false);
+        console.log(videoData);
       })
       .catch((error) => {
         console.log('error', error);
