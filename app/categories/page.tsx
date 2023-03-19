@@ -5,14 +5,13 @@ import { RiSearchLine } from 'react-icons/ri';
 import { Category, APIResponse } from '../types/types';
 import CircleButton from './CircleButton';
 
-type Props = {}; 
+type Props = {};
 
 const Categories: React.FC<Props> = () => {
   const region = 'IE';
   const [categories, setCategories] = useState<Category[]>([]);
   const [originalCategories, setOriginalCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [currentData, setcurrentData] = useState<APIResponse[]>([]);
   const today = new Date().toISOString().substring(0, 10);
 
   useEffect(() => {
@@ -23,7 +22,6 @@ const Categories: React.FC<Props> = () => {
         );
         const currentRes = await currentData.json();
 
-        setcurrentData(currentRes);
         setCategories(
           currentRes.map((item: APIResponse) => ({
             id: item.category_id,
