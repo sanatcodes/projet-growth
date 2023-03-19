@@ -21,19 +21,35 @@ import {
 } from '@/pages/api/categoriesDetailAPI';
 import VideosFromCategory from '../../../components/VideosFromCategory';
 import TagCloud from '../../../components/TagCloud';
+import LineChartButtons from '../../../components/LineChartButtons';
+import ComparisonTable from '../../../components/ComparisonTable';
 
-interface CategoryDetailProps {
+async function getCategoryData() {
+  const today = new Date().toISOString().slice(0, 10);
+  const currentData = await fetch(
+    `https://floating-hollows-40011.herokuapp.com/category/${today}`
+  );
+  const currentRes = await currentData.json();
+  return currentRes;
+}
+
+export async function getStaticParams() {
+  const paths = await getCategoryData();
+  return paths.map((path: APIResponse) => {
+    id: path.category_id;
+  });
+}
+
+export default function CategoryDetail({
+  params,
+}: {
   params: {
     id: string;
   };
-}
-
-export default function CategoryDetail({ params }: CategoryDetailProps) {
+}) {
   const today = new Date().toISOString().substring(0, 10);
   const [res, setData] = useState<APIResponse[] | null>(null);
-  const [weekData, setWeekData] = useState<APIResponse[] | undefined>(
-    undefined
-  );
+  const [weekData, setWeekData] = useState<APIResponse[] | null>(null);
   const [transformedData, setTransformedData] = useState<
     CategoryDetailDonut[] | null
   >(null);
@@ -86,7 +102,7 @@ export default function CategoryDetail({ params }: CategoryDetailProps) {
       })(),
     ])
       .then(([data, twoWeekPrediction, weekData, videoData]) => {
-        if (data !== undefined) {
+        if (data !== null) {
           setData(data);
           //transform data for donut chart
           const transData = data.map((item: APIResponse) => ({
@@ -111,14 +127,14 @@ export default function CategoryDetail({ params }: CategoryDetailProps) {
 
   // 1: this week 2: next week 3: two weeks
   useEffect(() => {
-    if (lineChartType == 0) {
+    if (lineChartType === 0) {
       setLineChartData(
-        weekData?.filter((d: APIResponse) => d.category_id == id) || []
+        weekData?.filter((d: APIResponse) => d.category_id === id) || []
       );
-    } else if (lineChartType == 1) {
+    } else if (lineChartType === 1) {
       setLineChartData(weekPrediction?.slice(0, 7) || []);
     } else {
-      setLineChartData(weekPrediction);
+      setLineChartData(weekPrediction || []);
     }
   }, [lineChartType, id, weekData, weekPrediction]);
 
@@ -137,47 +153,14 @@ export default function CategoryDetail({ params }: CategoryDetailProps) {
           <h1 className="text-center text-3xl">{categoryName}</h1>
         </div>
 
-        <div className="flex flex-wrap">
-          <div
-            className={`w-1/3 p-4 cursor-pointer ${
-              comparisonType === 'views' ? 'border-b-4 border-purple-500' : ''
-            }`}
-            onClick={handleViewsClick}
-          >
-            <h1 className="text-2xl font-bold text-center">Views</h1>
-          </div>
-          <div
-            className={`w-1/3 p-4 cursor-pointer ${
-              comparisonType === 'videos' ? 'border-b-4 border-purple-500' : ''
-            }`}
-            onClick={handleVideosClick}
-          >
-            <h1 className="text-2xl font-bold text-center">Videos</h1>
-          </div>
-          <div
-            className={`w-1/3 p-4 cursor-pointer ${
-              comparisonType === 'likes' ? 'border-b-4 border-purple-500' : ''
-            }`}
-            onClick={handleLikesClick}
-          >
-            <h1 className="text-2xl font-bold text-center">Likes</h1>
-          </div>
-          <div className="w-1/3 p-4">
-            <h1 className="text-2xl text-center font-bold">
-              {catCurrentData.views}
-            </h1>
-          </div>
-          <div className="w-1/3 p-4">
-            <h1 className="text-2xl text-center font-bold">
-              {catCurrentData.likes}
-            </h1>
-          </div>
-          <div className="w-1/3 p-4">
-            <h1 className="text-2xl text-center font-bold">
-              {catCurrentData.commentCount}
-            </h1>
-          </div>
-        </div>
+        <ComparisonTable
+          comparisonType={comparisonType}
+          catCurrentData={catCurrentData}
+          handleViewsClick={handleViewsClick}
+          handleVideosClick={handleVideosClick}
+          handleLikesClick={handleLikesClick}
+        />
+
         {!loading && (
           <div className=" w-1/6">
             <DonutChartWithCategory
@@ -191,32 +174,10 @@ export default function CategoryDetail({ params }: CategoryDetailProps) {
 
       {!loading && (
         <div className=" w-screen flex flex-col items-center gap-10">
-          <div className="flex gap-4 justify-center">
-            <button
-              className={`px-4 py-2 ${
-                lineChartType === 0 ? 'bg-purple-700 text-white' : 'bg-gray-600'
-              } rounded-lg`}
-              onClick={() => setLineChartType(0)}
-            >
-              This Week
-            </button>
-            <button
-              className={`px-4 py-2 ${
-                lineChartType === 1 ? 'bg-purple-700 text-white' : 'bg-gray-600'
-              } rounded-lg`}
-              onClick={() => setLineChartType(1)}
-            >
-              NextWeek
-            </button>
-            <button
-              className={`px-4 py-2 ${
-                lineChartType === 2 ? 'bg-purple-700 text-white' : 'bg-gray-600'
-              } rounded-lg`}
-              onClick={() => setLineChartType(2)}
-            >
-              2 Weeks
-            </button>
-          </div>
+          <LineChartButtons
+            lineChartType={lineChartType}
+            setLineChartType={setLineChartType}
+          />
 
           <div className=" w-1/2 items-center gap-6 justify-center flex flex-row">
             <VideosFromCategory categoryId={catID} videos={videoData} />
@@ -230,6 +191,7 @@ export default function CategoryDetail({ params }: CategoryDetailProps) {
               }
             />
           </div>
+          {/* word cloud with popular tags */}
           <div className=" w-full">
             <h1 className="text-center mb-5 text-3xl">{`Popular tags in ${categoryName}`}</h1>
             <TagCloud videos={videoData} />
