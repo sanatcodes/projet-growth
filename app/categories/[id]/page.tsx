@@ -6,7 +6,6 @@ import {
   CategoryDetailDonut,
   PredictionAPIResponse,
   Video,
-  VideoResponse,
 } from '../../types/types';
 import DonutChartWithCategory from '@/app/categories/[id]/components/DonutChartWithCategory';
 import LineChart from '@/app/categories/[id]/components/LineChart';
@@ -23,29 +22,22 @@ import TagCloud from './components/TagCloud';
 import LineChartButtons from './components/LineChartButtons';
 import ComparisonTable from './components/ComparisonTable';
 
-async function getCategoryData() {
-  const today = new Date().toISOString().slice(0, 10);
-  const currentData = await fetch(
-    `https://floating-hollows-40011.herokuapp.com/category/${today}`
-  );
-  const currentRes = await currentData.json();
-  return currentRes;
-}
+// async function getCategoryData() {
+//   const today = new Date().toISOString().slice(0, 10);
+//   const currentData = await fetch(
+//     `https://floating-hollows-40011.herokuapp.com/category/${today}`
+//   );
+//   const currentRes = await currentData.json();
+//   return currentRes;
+// }
 
-export async function generateStaticParams() {
-  const paths = await getCategoryData();
-  return paths.map((path: APIResponse) => {
-    id: path.category_id;
-  });
-}
-
-export default function CategoryDetail({
-  params,
-}: {
+type Params = {
   params: {
     id: string;
   };
-}) {
+};
+
+export default function CategoryDetail({ params: { id } }: Params) {
   const today = new Date().toISOString().substring(0, 10);
   const [res, setData] = useState<APIResponse[] | null>(null);
   const [weekData, setWeekData] = useState<APIResponse[] | null>(null);
@@ -64,8 +56,6 @@ export default function CategoryDetail({
     PredictionAPIResponse[] | APIResponse[] | [] | null
   >([]);
   const [videoData, setVideoData] = useState<Video[]>([]);
-
-  const { id } = params;
 
   const catID = parseInt(id);
 
@@ -188,4 +178,14 @@ export default function CategoryDetail({
       )}
     </div>
   );
+}
+
+export async function generateStaticParams() {
+  const today = new Date().toISOString().slice(0, 10);
+  const categories = await fetch(
+    `https://floating-hollows-40011.herokuapp.com/category/${today}`
+  ).then((res) => res.json());
+  return categories.map((category: APIResponse) => ({
+    id: category.category_id.toString(),
+  }));
 }

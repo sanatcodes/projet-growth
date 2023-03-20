@@ -3,7 +3,7 @@ import { categoryIcons } from '@/utils/dictionaries';
 import { useEffect, useState } from 'react';
 import { RiSearchLine } from 'react-icons/ri';
 import { Category, APIResponse } from '../types/types';
-import CircleButton from './CircleButton';
+import CircleButton from './components/CircleButton';
 
 type Props = {};
 
