@@ -63,11 +63,22 @@ export const fetchWeekPrediction = async (
   return res;
 };
 
+export async function getPopularVideoTags(categoryId: string) {
+  const maxResults = 50; // maximum number of results to retrieve
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_URL}?part=snippet&chart=mostPopular&maxResults=${maxResults}&videoCategoryId=${categoryId}&key=${process.env.NEXT_PUBLIC_API_KEY}`);
+    const data = await response.json();
+    const tags = data.items.map(item => item.snippet.tags).flat();
+    return tags
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 export async function getPopularVideosByCategory(
   categoryId: string,
   pageToken?: string
 ): Promise<VideoResponse> {
-  const baseUrl = "https://youtube.googleapis.com/youtube/v3/videos";
   const queryParams: VideoQueryParams = {
     part: "snippet",
     chart: "mostPopular",
@@ -77,7 +88,7 @@ export async function getPopularVideosByCategory(
     maxWidth: '100',
     pageToken,
   };
-  const url = `${baseUrl}?part=${queryParams.part}&chart=${queryParams.chart}&maxWidth=${queryParams.maxWidth}&regionCode=${queryParams.regionCode}&videoCategoryId=${queryParams.videoCategoryId}&key=${queryParams.key}${queryParams.pageToken ? `&pageToken=${queryParams.pageToken}` : ''}`;
+  const url = `${process.env.NEXT_PUBLIC_URL}?part=${queryParams.part}&chart=${queryParams.chart}&maxWidth=${queryParams.maxWidth}&regionCode=${queryParams.regionCode}&videoCategoryId=${queryParams.videoCategoryId}&key=${queryParams.key}${queryParams.pageToken ? `&pageToken=${queryParams.pageToken}` : ''}`;
 
   const response = await fetch(url);
 

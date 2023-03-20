@@ -16,6 +16,7 @@ import {
   fetchWeekData,
   fetchWeekPrediction,
   getPopularVideosByCategory,
+  getPopularVideoTags,
 } from '@/pages/api/categoriesDetailAPI';
 import VideosFromCategory from './components/VideosFromCategory';
 import TagCloud from './components/TagCloud';
@@ -57,6 +58,8 @@ export default function CategoryDetail({ params: { id } }: Params) {
   >([]);
   const [videoData, setVideoData] = useState<Video[]>([]);
 
+  const [tags, setTags] = useState([]);
+
   const catID = parseInt(id);
 
   const handleViewsClick = () => {
@@ -77,12 +80,11 @@ export default function CategoryDetail({ params: { id } }: Params) {
       fetchWeekPrediction(id, today, 2),
       fetchWeekData(today),
       getPopularVideosByCategory(id),
+      getPopularVideoTags(id),
     ])
-      .then(([data, twoWeekPrediction, weekData, videoData]) => {
+      .then(([data, twoWeekPrediction, weekData, videoData, tags]) => {
         if (data !== null) {
           setData(data);
-          console.log(data);
-          
           //transform data for donut chart
           const transData = data.map((item: APIResponse) => ({
             category_id: item.category_id,
@@ -97,7 +99,7 @@ export default function CategoryDetail({ params: { id } }: Params) {
         setWeekData(weekData);
         setVideoData(videoData.videos);
         setLoading(false);
-        console.log('week data ', weekData);
+        setTags(tags);
       })
       .catch((error) => {
         console.log('error', error);
@@ -172,9 +174,9 @@ export default function CategoryDetail({ params: { id } }: Params) {
             />
           </div>
           {/* word cloud with popular tags */}
-          <div className=" w-full">
+          <div className=" w-1/2">
             <h1 className="text-center mb-5 text-3xl">{`Popular tags in ${categoryName}`}</h1>
-            <TagCloud videos={videoData} />
+            <TagCloud tags={tags} />
           </div>
         </div>
       )}

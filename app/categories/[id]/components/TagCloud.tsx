@@ -1,21 +1,13 @@
-'use client';
 import { tagCloudOptions, Video } from '@/app/types/types';
+import { getPopularVideoTags } from '@/pages/api/categoriesDetailAPI';
 import React, { useMemo } from 'react';
 import WordCloud, { OptionsProp } from 'react-wordcloud';
 
 interface Props {
-  videos?: Video[];
+  tags: string[];
 }
 
-const TagCloud: React.FC<Props> = ({ videos = [] }) => {
-  // Extract tags from videos
-  const tags = useMemo(() => {
-    const allTags: string[] = [];
-    videos.forEach((video) => {
-      allTags.push(...video.tags);
-    });
-    return allTags;
-  }, [videos]);
+export default  function TagCloud({tags}: Props) {
 
   // Aggregate common tags
   const tagCounts = useMemo(() => {
@@ -60,6 +52,4 @@ const TagCloud: React.FC<Props> = ({ videos = [] }) => {
       <WordCloud words={wordCloudData} options={options} />
     </div>
   );
-};
-
-export default TagCloud;
+}

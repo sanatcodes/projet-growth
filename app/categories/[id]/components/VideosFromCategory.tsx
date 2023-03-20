@@ -10,7 +10,7 @@ interface Props {
 
 const VideosFromCategory: React.FC<Props> = ({ categoryId, videos }) => {
   return (
-    <div className="flex flex-col gap-4 items-center">
+    <div className="flex flex-col gap-4 items-center w-">
       <h2 className="text-xl font-sans mb-4 ">
         <span className="font-normal">{`Popular videos in `}</span>
         <span className="font-bold block  text-center">

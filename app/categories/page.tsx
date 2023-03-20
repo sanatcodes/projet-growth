@@ -1,18 +1,33 @@
 'use client';
 import { categoryIcons } from '@/utils/dictionaries';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { RiSearchLine } from 'react-icons/ri';
 import { Category, APIResponse } from '../types/types';
+import chroma from 'chroma-js';
 import CircleButton from './components/CircleButton';
 
 type Props = {};
 
 const Categories: React.FC<Props> = () => {
+  const initialColors = [
+    '#F3FD02', // Yellow
+    '#0ABEF5', // Blue
+    '#E27525', // Orange
+    '#F50ABE', // Pink
+    '#F2D600', //a slightly darker, more golden yellow
+    '#0098DB', //(a slightly darker, more muted blue),
+    '#FF5722', //(a brighter, more intense orange)
+    '#E91E63', //(a brighter, more intense pink)
+  ];
   const region = 'IE';
   const [categories, setCategories] = useState<Category[]>([]);
   const [originalCategories, setOriginalCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const today = new Date().toISOString().substring(0, 10);
+  const [colors, setColors] = useState<string[]>([]);
+
+  // write the name of colour next to hex code in a comment
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,6 +54,13 @@ const Categories: React.FC<Props> = () => {
         console.error(error);
       }
     };
+    const col = chroma
+      .scale(initialColors)
+      .mode('lch')
+      .colors(categories.length > 15 ? categories.length : 15);
+    setColors(col);
+    // console.log(col);
+    console.log(categories);
 
     fetchData();
   }, [today]);
@@ -82,13 +104,18 @@ const Categories: React.FC<Props> = () => {
         )}
       </div>
       <div className="grid gap-6 place-items-center mt-6 grid-cols-fluid">
-        {categories.map((category: Category) => (
-          <CircleButton
-            key={category.id}
-            category={category.snippet.title}
-            id={category.id}
-          />
-        ))}
+        {categories.map((category: Category, index) => {
+          return (
+            <Link key={category.id} href={`/categories/${category.id}`}>
+              <button
+                className={`text-black font-medium rounded-full p-5 mt-10 w-40 h-40 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110 active:scale-95`}
+                style={{ backgroundColor: colors[index] }} // <--- modified
+              >
+                {category.snippet.title}
+              </button>
+            </Link>
+          );
+        })}
       </div>
     </div>
   );
