@@ -74,13 +74,15 @@ export default function CategoryDetail({ params: { id } }: Params) {
   useEffect(() => {
     Promise.all([
       fetchCategoryData(today),
-      fetchWeekPrediction('1', today, 2),
+      fetchWeekPrediction(id, today, 2),
       fetchWeekData(today),
       getPopularVideosByCategory(id),
     ])
       .then(([data, twoWeekPrediction, weekData, videoData]) => {
         if (data !== null) {
           setData(data);
+          console.log(data);
+          
           //transform data for donut chart
           const transData = data.map((item: APIResponse) => ({
             category_id: item.category_id,
@@ -95,7 +97,7 @@ export default function CategoryDetail({ params: { id } }: Params) {
         setWeekData(weekData);
         setVideoData(videoData.videos);
         setLoading(false);
-        console.log(videoData);
+        console.log('week data ', weekData);
       })
       .catch((error) => {
         console.log('error', error);

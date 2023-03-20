@@ -59,7 +59,7 @@ const LineChart: React.FC<Props> = ({ data, categoryId, comparisonType }) => {
     ) {
       // Data is PredictionAPIResponse[]
       labels = (data as PredictionAPIResponse[])
-        .map((item) => item.trending_date)
+        .map((item) => item.date)
         .reverse();
       chartData = (data as PredictionAPIResponse[])
         .map((item) => item[comparisonType])

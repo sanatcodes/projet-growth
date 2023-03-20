@@ -23,7 +23,7 @@ export type APIResponse = {
 
 export type PredictionAPIResponse = {
   category_id: string,
-  trending_date: string,
+  date: string,
   views_prediction: number,
   likes_prediction: number,
   videos_prediction: number,

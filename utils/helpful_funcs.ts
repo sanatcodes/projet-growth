@@ -35,7 +35,7 @@ export function extractFormattedData(data: APIResponse[], categoryId: number): a
 
     return {
       views: formatCount(categoryData[0].views.toString()),
-      likes: formatCount(categoryData[0].videos.toString()),
-      commentCount: formatCount(categoryData[0].likes.toString()),
+      videos: formatCount(categoryData[0].videos.toString()),
+      likes: formatCount(categoryData[0].likes.toString()),
     };
   }

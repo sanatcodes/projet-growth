@@ -11,43 +11,28 @@ export const fetchCategoryData = async (date: string): Promise<APIResponse[]> =>
 };
 
 export const fetchWeekData = async (startDate: string): Promise<APIResponse[]> => {
-  const date = new Date(startDate);
-  const promises = [];
-  for (let i = 0; i < 7; i++) {
-    const dateString = date.toISOString().substring(0, 10);
-    const promise = fetchCategoryData(dateString);
-    promises.push(promise);
-    date.setDate(date.getDate() - 1);
-  }
-  const dataArrays = await Promise.all(promises);
-  const mergedData = dataArrays.flat();
-  return mergedData;
+  const response = await fetch(`${BASE_URL}/category/week_data/${startDate}`);
+  const data: APIResponse[] = await response.json();
+  return data
 };
-export const fetchCategoryPrediction = async (
-  item: PredictionInput
-): Promise<PredictionAPIResponse> => {
+
+export const fetchPredictionFromAPI = async (
+  item: PredictionInput[]
+): Promise<PredictionAPIResponse[]> => {
   const url = `${BASE_URL}/category/predict`;
   try {
-    const response = await axios.post<PredictionAPIResponse>(url, item);
+    const response = await axios.post<PredictionAPIResponse[]>(url, item);
     const predictionData = response.data;
-    const { category_id, year, month, day } = item;
-    const trending_date = `${year}-${month}-${day}`;
-    return {
-      category_id,
-      trending_date,
-      views_prediction: predictionData.views_prediction,
-      likes_prediction: predictionData.likes_prediction,
-      videos_prediction: predictionData.videos_prediction,
-    };
+    return predictionData;
   } catch (error) {
     console.error(error);
-    return {
-      category_id: item.category_id,
-      trending_date: 'not found',
+    return item.map((input) => ({
+      category_id: input.category_id,
+      date: 'not found',
       views_prediction: 0,
       likes_prediction: 0,
       videos_prediction: 0,
-    };
+    }));
   }
 };
 
@@ -59,22 +44,23 @@ export const fetchWeekPrediction = async (
 ): Promise<PredictionAPIResponse[]> => {
   const date = new Date(startDate);
   const today = new Date();
-  const predictions: PredictionAPIResponse[] = [];
+  const predictions: PredictionInput[] = [];
   for (let i = 0; i < weeks * 7; i++) {
     if (date > today) {
       const dateString = date.toISOString().substring(0, 10);
-      const prediction = await fetchCategoryPrediction({
+      const prediction = {
         category_id,
         year: dateString.substring(0, 4),
         month: dateString.substring(5, 7),
         day: dateString.substring(8, 10),
         day_of_week: date.getDay().toString(),
-      });
+      };
       predictions.push(prediction);
     }
     date.setDate(date.getDate() + 1);
   }
-  return predictions;
+  const res = fetchPredictionFromAPI(predictions)
+  return res;
 };
 
 export async function getPopularVideosByCategory(
