@@ -68,8 +68,9 @@ export async function getPopularVideoTags(categoryId: string) {
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_URL}?part=snippet&chart=mostPopular&maxResults=${maxResults}&videoCategoryId=${categoryId}&key=${process.env.NEXT_PUBLIC_API_KEY}`);
     const data = await response.json();
-    const tags = data.items.map(item => item.snippet.tags).flat();
-    return tags
+    console.log("tag data", data);
+    const tags = data.items.map(item => item.snippet.tags).flat().filter(tag => tag !== undefined);
+    return tags;
   } catch (error) {
     console.error(error);
   }

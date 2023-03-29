@@ -1,5 +1,3 @@
-import { tagCloudOptions, Video } from '@/app/types/types';
-import { getPopularVideoTags } from '@/pages/api/categoriesDetailAPI';
 import React, { useMemo } from 'react';
 import WordCloud, { OptionsProp } from 'react-wordcloud';
 

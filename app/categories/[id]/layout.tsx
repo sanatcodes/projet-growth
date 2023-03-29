@@ -1,4 +1,4 @@
-import VerticalCategories from '@/app/categories/[id]/components/verticalCategories';
+import VerticalCategories from './components/VerticalCategories';
 
 export default function CategoryDetailLayout({
   children,
@@ -7,7 +7,7 @@ export default function CategoryDetailLayout({
 }) {
   return (
     <main className="flex">
-      <div className=" bg-purple-600">
+      <div className=" bg-purple-600 h-screen">
         {/* @ts-ignore */}
         <VerticalCategories />
       </div>

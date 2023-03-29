@@ -35,10 +35,14 @@ const Categories: React.FC<Props> = () => {
         const currentData = await fetch(
           `https://floating-hollows-40011.herokuapp.com/category/${today}`
         );
-        const currentRes = await currentData.json();
+        const currentResponse = await currentData.json();
+
+        const currentRes = currentResponse.filter(
+          (item) => item.category_id !== '19' && item.category_id !== '27'
+        );
 
         setCategories(
-          currentRes.map((item: APIResponse) => ({
+          currentRes.map((item) => ({
             id: item.category_id,
             snippet: { title: categoryIcons[parseInt(item.category_id)][1] },
           }))
@@ -82,7 +86,7 @@ const Categories: React.FC<Props> = () => {
   }
 
   return (
-    <div className="text-center">
+    <div className="text-center mt-10">
       <h1 className="text-xl font-medium">Categories on YouTube</h1>
       <div className="relative mt-6 mx-auto w-64">
         <span className="absolute inset-y-0 left-0 flex items-center pl-3">
@@ -103,19 +107,22 @@ const Categories: React.FC<Props> = () => {
           </button>
         )}
       </div>
-      <div className="grid gap-6 place-items-center mt-6 grid-cols-fluid">
-        {categories.map((category: Category, index) => {
-          return (
-            <Link key={category.id} href={`/categories/${category.id}`}>
-              <button
-                className={`text-black font-medium rounded-full p-5 mt-10 w-40 h-40 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110 active:scale-95`}
-                style={{ backgroundColor: colors[index] }} // <--- modified
-              >
-                {category.snippet.title}
-              </button>
-            </Link>
-          );
-        })}
+      <div className="nav-buttons-wrapper"></div>
+      <div className="buttons-container max-h-[calc(100vh-10rem)] overflow-y-auto overflow-x-hidden mt-6">
+        <div className="grid gap-6 place-items-center grid-cols-fluid">
+          {categories.map((category: Category, index) => {
+            return (
+              <Link key={category.id} href={`/categories/${category.id}`}>
+                <button
+                  className={`text-black font-medium rounded-full p-5 mt-10 w-40 h-40 transition duration-300 ease-in-out transform hover:shadow-lg hover:bg-[#ccc] active:scale-95`}
+                  style={{ backgroundColor: colors[index] }}
+                >
+                  {category.snippet.title}
+                </button>
+              </Link>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

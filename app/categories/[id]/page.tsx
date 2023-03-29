@@ -75,6 +75,7 @@ export default function CategoryDetail({ params: { id } }: Params) {
   };
 
   useEffect(() => {
+    if (!id) return;
     Promise.all([
       fetchCategoryData(today),
       fetchWeekPrediction(id, today, 2),
@@ -105,7 +106,7 @@ export default function CategoryDetail({ params: { id } }: Params) {
         console.log('error', error);
         setLoading(false);
       });
-  }, [id, today]);
+  }, [id]);
 
   // 1: this week 2: next week 3: two weeks
   useEffect(() => {
@@ -120,19 +121,20 @@ export default function CategoryDetail({ params: { id } }: Params) {
     }
   }, [lineChartType, id, weekData, weekPrediction]);
 
-  const [iconName, categoryName] = categoryIcons[catID];
-
   const catCurrentData =
     res == null
       ? { views: 'na', comments: 'na', likes: 'na' }
       : extractFormattedData(res, catID);
 
   return (
-    <div className=" flex flex-col gap-20 justify-center items-center">
-      <div className=" flex flex-row gap-10">
+    <div className="flex flex-col gap-20 justify-center items-center mt-10 ml-10">
+      <div className="flex flex-row gap-10">
         <div className="flex flex-col justify-center items-center gap-2">
-          <FontAwesomeIcon className=" text-3xl mr-2" icon={iconName} />
-          <h1 className="text-center text-3xl">{categoryName}</h1>
+          <FontAwesomeIcon
+            className="text-3xl mr-2"
+            icon={categoryIcons[catID][0]}
+          />
+          <h1 className="text-center text-3xl">{categoryIcons[catID][1]}</h1>
         </div>
 
         <ComparisonTable
@@ -144,24 +146,24 @@ export default function CategoryDetail({ params: { id } }: Params) {
         />
 
         {!loading && (
-          <div className=" w-1/6">
+          <div className="w-full sm:w-1/3 md:w-1/4 lg:w-1/6">
             <DonutChartWithCategory
               categoryData={transformedData}
               comparisonType={comparisonType}
-              category={categoryName}
+              category={categoryIcons[catID][1]}
             />
           </div>
         )}
       </div>
 
       {!loading && (
-        <div className=" w-screen flex flex-col items-center gap-10">
+        <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center gap-10">
           <LineChartButtons
             lineChartType={lineChartType}
             setLineChartType={setLineChartType}
           />
 
-          <div className=" w-1/2 items-center gap-6 justify-center flex flex-row">
+          <div className="w-full sm:w-1/2 items-center gap-6 justify-center flex flex-row">
             <VideosFromCategory categoryId={catID} videos={videoData} />
             <LineChart
               data={lineChartData}
@@ -174,8 +176,8 @@ export default function CategoryDetail({ params: { id } }: Params) {
             />
           </div>
           {/* word cloud with popular tags */}
-          <div className=" w-1/2">
-            <h1 className="text-center mb-5 text-3xl">{`Popular tags in ${categoryName}`}</h1>
+          <div className="w-full sm:w-1/2">
+            <h1 className="text-center mb-5 text-3xl">{`Popular tags in ${categoryIcons[catID][1]}`}</h1>
             <TagCloud tags={tags} />
           </div>
         </div>
