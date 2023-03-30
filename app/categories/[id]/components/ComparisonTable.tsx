@@ -25,7 +25,7 @@ const ComparisonTable = ({
         }`}
         onClick={handleViewsClick}
       >
-        <h1 className="text-2xl font-bold text-center">Views</h1>
+        <button className="text-2xl font-bold text-center">Views</button>
       </div>
       <div
         className={`w-1/3 p-4 cursor-pointer ${
@@ -33,7 +33,7 @@ const ComparisonTable = ({
         }`}
         onClick={handleVideosClick}
       >
-        <h1 className="text-2xl font-bold text-center">Videos</h1>
+        <button className="text-2xl font-bold text-center">Videos</button>
       </div>
       <div
         className={`w-1/3 p-4 cursor-pointer ${
@@ -41,7 +41,7 @@ const ComparisonTable = ({
         }`}
         onClick={handleLikesClick}
       >
-        <h1 className="text-2xl font-bold text-center">Likes</h1>
+        <button className="text-2xl font-bold text-center">Likes</button>
       </div>
       <div className="w-1/3 p-4">
         <h1 className="text-2xl text-center font-bold">

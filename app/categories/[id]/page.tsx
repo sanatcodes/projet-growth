@@ -176,7 +176,7 @@ export default function CategoryDetail({ params: { id } }: Params) {
             />
           </div>
           {/* word cloud with popular tags */}
-          <div className="w-full sm:w-1/2">
+          <div className="w-full">
             <h1 className="text-center mb-5 text-3xl">{`Popular tags in ${categoryIcons[catID][1]}`}</h1>
             <TagCloud tags={tags} />
           </div>

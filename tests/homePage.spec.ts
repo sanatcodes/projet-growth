@@ -2,8 +2,9 @@
 import { test, expect } from '@playwright/test';
 
 test('nav workflow', async ({ page }) => {
-    await page.goto('http://localhost:3000');
-  
-    // Expect a title "to contain" a substring.
-    await expect(page).toHaveTitle(/Create Next App/);
+  await page.goto('http://localhost:3000');
+
+  await page.getByRole('link', { name: 'Explore Categories' }).click();
+  await expect(page).toHaveURL(/categories/);
+
   });
